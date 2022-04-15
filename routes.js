@@ -12,7 +12,15 @@ const router = new express.Router();
 /** Homepage: show list of customers. */
 
 router.get("/", async function (req, res, next) {
-  const customers = await Customer.all();
+  let customers;
+
+  if(req.query.search){
+    customers = await Customer.filterBySearch(req.query.search);
+  }
+  else{
+    customers = await Customer.all();
+  }
+  // console.log("there should not be a body: ")
   return res.render("customer_list.html", { customers });
 });
 

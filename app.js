@@ -4,14 +4,15 @@
 
 const Express = require("express");
 const nunjucks = require("nunjucks");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const routes = require("./routes");
 const { NotFoundError } = require("./expressError");
-
 const app = new Express();
 
 // Parse body for urlencoded (non-JSON) data
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(Express.urlencoded({ extended: true }));
+app.use(Express.json());
 
 nunjucks.configure("templates", {
   autoescape: true,
