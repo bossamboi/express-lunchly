@@ -45,13 +45,36 @@ class Customer {
                   phone,
                   notes
            FROM customers
-		   WHERE first_name ILIKE $1 or last_name ILIKE $1
+		   WHERE first_name || ' ' || last_name ILIKE $1
            ORDER BY last_name, first_name`, [`%${searchTerm}%`]
 		);
 		return results.rows.map((c) => new Customer(c));
 	}
-// first_name LIKE 'Jen%';
+	/** find top ten customers with the most reservations */
+	static async getTopTen(){
+		console.log("GETTING TOP TEN")
+		let results = await db.query(
+			`SELECT r.customer_id, 
+					c.first_name as "firstName",
+					c.last_name as "lastName", 
+					c.phone, 
+					c.notes
+			 FROM reservations AS r
+			 JOIN customers AS c
+			 ON r.customer_id = c.id
+			 GROUP BY r.customer_id, 
+			 		  c.first_name, 
+					   c.last_name, 
+					   c.phone, 
+					   c.notes
+			 ORDER BY COUNT(*) DESC 
+			 LIMIT 10;`
+		);
+		console.log(results, "<<<<<<<<<HERE ARE THE RESULTS>>>>>>>>>>>>")
+		return results.rows.map((c) => new Customer(c));
+	}
 
+	/** find one customer */
 	static async get(id) {
 		const results = await db.query(
 			`SELECT id,
