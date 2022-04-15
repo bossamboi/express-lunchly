@@ -16,9 +16,18 @@ class Customer {
 		this.notes = notes;
 	}
 
-  /** format custoemr full name */
+	/** Getter/Setter for notes */
 
-	fullName() {
+	get notes() {
+		return this._notes;
+	}
+	set notes(val) {
+		this._notes = val || "";
+	}
+
+	/** Getter for full name*/
+
+	get fullName() {
 		return `${this.firstName} ${this.lastName}`;
 	}
 
@@ -37,7 +46,7 @@ class Customer {
 		return results.rows.map((c) => new Customer(c));
 	}
 	/** find all customers by first or last name */
-	static async filterBySearch(searchTerm){
+	static async filterBySearch(searchTerm) {
 		let results = await db.query(
 			`SELECT id,
                   first_name AS "firstName",
@@ -46,13 +55,14 @@ class Customer {
                   notes
            FROM customers
 		   WHERE first_name || ' ' || last_name ILIKE $1
-           ORDER BY last_name, first_name`, [`%${searchTerm}%`]
+           ORDER BY last_name, first_name`,
+			[`%${searchTerm}%`]
 		);
 		return results.rows.map((c) => new Customer(c));
 	}
 	/** find top ten customers with the most reservations */
-	static async getTopTen(){
-		console.log("GETTING TOP TEN")
+	static async getTopTen() {
+		console.log("GETTING TOP TEN");
 		let results = await db.query(
 			`SELECT r.customer_id, 
 					c.first_name as "firstName",
@@ -70,7 +80,7 @@ class Customer {
 			 ORDER BY COUNT(*) DESC 
 			 LIMIT 10;`
 		);
-		console.log(results, "<<<<<<<<<HERE ARE THE RESULTS>>>>>>>>>>>>")
+		console.log(results, "<<<<<<<<<HERE ARE THE RESULTS>>>>>>>>>>>>");
 		return results.rows.map((c) => new Customer(c));
 	}
 

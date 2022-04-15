@@ -17,6 +17,43 @@ class Reservation {
 		this.notes = notes;
 	}
 
+	get customerId() {
+		return this._customerId;
+	}
+	set customerId(val) {
+		if (this.customerId === undefined) {
+			this._customerId = val;
+		} else if (val !== this.customerId && this.customerId) {
+			const err = new Error("Cannot reassign customer");
+			err.status = 400;
+			throw err;
+		}
+	}
+
+	/** Getter/Setter for notes */
+
+	get notes() {
+		return this._notes;
+	}
+	set notes(val) {
+		this._notes = val || "";
+	}
+
+	/** Getter/Setter for numGuests */
+
+	get numGuests() {
+		return this._numGuests;
+	}
+	set numGuests(val) {
+		if (val < 1) {
+			const err = new Error("Number of guests must be at least one");
+			err.status = 400;
+			throw err;
+		} else {
+			this._numGuests = val;
+		}
+	}
+
 	/** formatter for startAt */
 
 	getFormattedStartAt() {
